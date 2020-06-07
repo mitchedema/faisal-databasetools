@@ -32,7 +32,7 @@ datasetsubq="SELECT DATASET.ID FROM DATASET WHERE DATASET.NAME = '$dataset'"
 # Condition for query to select data from specified dataset
 datasetcond="SUBJECT.DATASETID = ($datasetsubq)"
 #### Condition to be exectued in query ####
-condition="DX_STRATIFICATION = 'SNC'"
+condition="DX_STRATIFICATION = 'SDAT'"
 # Joining VISIT data for remaining fields of select statement
 join="INNER JOIN VISIT ON VISIT.SUBJECTID = SUBJECT.ID"
 # Formulating final query to be executed 
