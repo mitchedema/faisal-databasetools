@@ -16,7 +16,7 @@ if [ ! -d "$fpath" ]; then
 	exit 1
 fi
 # File name for particular wrapper
-fname="males_over_80.csv"
+fname="all_aux_snc.csv"
 # Path to save output of query as a CSV
 savepath="$fullpath/$fname"
 # Path to display to user where file was saved
