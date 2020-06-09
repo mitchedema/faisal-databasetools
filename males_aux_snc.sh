@@ -22,7 +22,7 @@ savepath="$fullpath/$fname"
 # Path to display to user where file was saved
 savepathd="$fullpathd/$fname"
 #### Fields to be returned in select ####
-fields="SUBJECTID, VISCODE, AGE, SEX, DX_STRATIFICATION, APOE4, APOE2, APOE3, MMSE, CDRSB, ADAS11, ADAS13"
+fields="SUBJECTID, VISCODE, AGE, SEX, DX_STRATIFICATION, FLDSTRNG, APOE4, APOE2, APOE3, MMSE, CDRSB, ADAS11, ADAS13"
 # Primary table being queried
 table="SUBJECT"
 #### Name of dataset to be queried ####
@@ -32,13 +32,15 @@ datasetsubq="SELECT DATASET.ID FROM DATASET WHERE DATASET.NAME = '$dataset'"
 # Condition for query to select data from specified dataset
 datasetcond="SUBJECT.DATASETID = ($datasetsubq)"
 #### Condition to be exectued in query ####
-condition="SEX = 'Male' AND DX_STRATIFICATION = 'SNC'"
+condition="SEX = 'Male' AND DX_STRATIFICATION = 'sNC'"
 # Joining VISIT data for remaining fields of select statement
 join="INNER JOIN VISIT ON VISIT.SUBJECTID = SUBJECT.ID"
 # Formulating final query to be executed 
 query="SELECT $fields FROM $table $join WHERE $condition AND $datasetcond;"
 # Calling psql and setting search path to execute query and save output CSV to $savepath
-psql "dbname=faisalcids options=--search_path=alzheimer" -t -A -F "," -o "$savepath" -c "$query"
+searchpath="alzheimer"
+dbname="faisalcids"
+psql "dbname=$dbname options=--search_path=$searchpath" -P footer -A -F "," -o "$savepath" -c "$query"
 # If psql completes with no error, notify user that CSV was saved and where it is located
 if [ $? -eq 0 ]; then
 	echo "CSV file saved to: $savepathd"
