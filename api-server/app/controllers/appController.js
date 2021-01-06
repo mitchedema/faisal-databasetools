@@ -17,20 +17,9 @@ exports.get_data = async function (req,res) {
       );
       conditions = andConditions.join("");
     }
-
     const result = await Data.getData(schema,values,conditions);
 
-    //get only unique values after full join
-    let rows = [];
-    result.rows.forEach(row => {
-      const rowString = JSON.stringify(row);
-      const resultString = JSON.stringify(rows);
-      if (!resultString.includes(rowString)){
-        rows.push(row);
-      }
-    });
-
-    return res.status(200).json(rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     return res.status(500).json(err);
   }

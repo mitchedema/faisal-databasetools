@@ -8,7 +8,7 @@ const Data = {
 // generalized query to select data from faisal database
 Data.getData = async (schema,values,conditions) => {
   const query_template =
-  `SELECT
+  `SELECT DISTINCT
     ${values}
   FROM
     ${schema}.dataset,
