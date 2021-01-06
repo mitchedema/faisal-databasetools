@@ -21,8 +21,16 @@ const useStyles = makeStyles((theme) => ({
 export default function SimpleSelect() {
   const classes = useStyles();
   const [schema, setSchema] = React.useState('');
+  const [option2, setOption2] = React.useState('');
+  const [option3, setOption3] = React.useState('');
 
-  const handleChange = (event) => {
+  const handleChangeSelect1 = (event) => {
+    setSchema(event.target.value);
+  };
+  const handleChangeSelect2 = (event) => {
+    setSchema(event.target.value);
+  };
+  const handleChangeSelect3 = (event) => {
     setSchema(event.target.value);
   };
 
@@ -34,12 +42,39 @@ export default function SimpleSelect() {
           labelId="imple-select-outlined-label"
           id="simple-select-outlined"
           value={schema}
-          onChange={handleChange}
+          onChange={handleChangeSelect1}
           label="Research Type"
           className="select-styling"
         >
           <MenuItem value={'alzheimer'}>Alzheimer</MenuItem>
         </Select>
+        {
+          schema
+          && <Select
+            labelId="imple-select-outlined-label"
+            id="simple-select-outlined"
+            value={option2}
+            onChange={handleChangeSelect2}
+            label="Research Type"
+            className="select-styling"
+          >
+            <MenuItem value={'alzheimer'}>Alzheimer</MenuItem>
+          </Select>
+        }
+        {
+          schema
+          && option2
+          && <Select
+            labelId="imple-select-outlined-label"
+            id="simple-select-outlined"
+            value={option}
+            onChange={handleChangeSelect3}
+            label="Research Type"
+            className="select-styling"
+          >
+            <MenuItem value={'alzheimer'}>Alzheimer</MenuItem>
+          </Select>
+        }
       </FormControl>
     </div>
   );
