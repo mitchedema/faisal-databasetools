@@ -4,4 +4,5 @@ module.exports = function(app) {
 
   app.route('/data').get(controller.get_data);
   app.route('/values').get(controller.get_values);
+  app.route('/range').get(controller.get_range);
 }

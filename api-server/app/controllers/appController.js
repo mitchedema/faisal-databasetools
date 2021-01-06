@@ -36,3 +36,16 @@ exports.get_values = async function (req,res) {
     return res.status(500).json(err);
   }
 }
+
+// call the select statement from models for GET request
+exports.get_range = async function (req,res) {
+  try {
+    const schema = req.query.schema;
+    const value = req.query.value;
+    const result = await Data.getRange(schema,value);
+
+    return res.status(200).json(result.rows);
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+}
