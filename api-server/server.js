@@ -21,7 +21,7 @@ app.use(function(req, res, next) {
 appRoutes(app, jsonParser);
 // app.use(bodyParser.json({ type: 'application/*+json' }))
 // app.use(bodyParser.urlencoded({ extended: true }));
-const port = 3000;
+const port = 4000;
 
 app.listen(port, () => {
     console.log(`Faisal Database App listening at: http://localhost:${port}`)
