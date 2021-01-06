@@ -5,9 +5,8 @@ const psql = require('./db.js');
 const Data = {
 };
 
-// select statement for GET request females with sDat diagnosis
+// generalized query to select data from faisal database
 Data.getData = async (schema,values,conditions) => {
-  console.log(conditions)
   const query_template =
   `SELECT
     ${values}
@@ -22,7 +21,6 @@ Data.getData = async (schema,values,conditions) => {
     visit.id = repeatmeasure.visitid
     ${conditions};
     `
-  console.log(query_template);
   try{
     const client = await psql.connect();
     const result = await client.query(query_template);
