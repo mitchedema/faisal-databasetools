@@ -31,4 +31,23 @@ Data.getData = async (schema,values,conditions) => {
   }
 }
 
+// get all values in a given schema
+Data.getValues = async (schema) => {
+  try{
+    const query =
+      `SELECT
+        column_name
+      FROM
+        information_schema.columns
+      WHERE
+        table_schema = '${schema}';`
+    const client = await psql.connect();
+    const result = await client.query(query);
+    await client.release();
+    return result;
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
 module.exports= Data;
