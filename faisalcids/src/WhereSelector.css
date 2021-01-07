@@ -1,0 +1,11 @@
+div.selectors > * {
+    margin: 0.5em;
+}
+
+.select-styling {
+    width: 200px;
+  }
+
+#simple-select-outlined-label, #simple-select-outlined {
+  color: #ffffff;
+}
