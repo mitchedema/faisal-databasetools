@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-color: #282c34;
+  background-color: #686a70;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -10,10 +10,18 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+div.selectors > * {
+  margin: 0.5em;
 }
 
 .select-styling {
   width: 200px;
+}
+
+#simple-select-outlined-label, #simple-select-outlined {
+  color: #ffffff;
+}
+
+#multiple-chip-label {
+  color: #ffffff;
 }
