@@ -8,6 +8,7 @@ body {
 
 .asySelect {
   min-width: 140px;
+  color: black;
 }
 
 .dataTable > div {
