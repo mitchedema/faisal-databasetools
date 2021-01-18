@@ -14,6 +14,8 @@ import { DataGrid } from '@material-ui/data-grid'
 import WhereSelector from './WhereSelector';
 import './App.css';
 
+import CsvDownload from 'react-json-to-csv'
+
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
@@ -380,15 +382,43 @@ export default function SimpleSelect() {
           {
             data.length > 0
             &&
-            <DataGrid
-              rows={data}
-              columns={columns}
-              pageSize={10}
-              disableSelectionOnClick
-              page={tablePage}
-              onPageChange={(params) => {
-                setTablePage(params.page)
-              }}/>
+            <div>
+              <DataGrid
+                rows={data}
+                columns={columns}
+                pageSize={10}
+                disableSelectionOnClick
+                page={tablePage}
+                onPageChange={(params) => {
+                  setTablePage(params.page)
+                }}/>
+            </div>
+          }
+        </div>
+        <div>
+          {
+            data.length > 0
+            &&
+            <CsvDownload
+              data={data}
+              filename="query.csv"
+              style={{ //pass other props, like styles
+                boxShadow:"inset 0px 1px 0px 0px #e184f3",
+                background:"linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
+                backgroundColor:"#c123de",
+                borderRadius:"6px",
+                border:"1px solid #a511c0",
+                display:"inline-block",
+                cursor:"pointer","color":"#ffffff",
+                fontSize:"15px",
+                fontWeight:"bold",
+                padding:"6px 24px",
+                textDecoration:"none",
+                textShadow:"0px 1px 0px #9b14b3"
+                }}
+            >
+              Generate CSV ✨
+            </CsvDownload>
           }
         </div>
     </div>
