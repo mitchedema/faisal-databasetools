@@ -85,6 +85,8 @@ export default function SimpleSelect() {
   const [dataType, setDataType] = useState({});
 
   const baseURL = 'http://localhost:4000/data/?schema=';
+  const baseRangeURL = 'http://localhost:4000/range/?schema=';
+  const baseValueURL = 'http://localhost:4000/values/?schema=';
 
   const dataTypeTranslation = {
     'integer': 'number',
@@ -108,7 +110,7 @@ export default function SimpleSelect() {
     setSchema(event.target.value);
     const curSchema = event.target.value
     // Fetch all values present in schema
-    fetch('http://localhost:4000/values/?schema=' + curSchema).then(async response => {
+    fetch(baseValueURL + curSchema).then(async response => {
       // Wait for data to be returned
       let data = await response.json()
       let dataTypes = {}
@@ -144,7 +146,7 @@ export default function SimpleSelect() {
       diff = newValues.filter(x => curValues.indexOf(x) === -1)[0]
       if (diff) {
         // Fetch value options for the selected field
-        fetch('http://localhost:4000/range/?schema=' + schema + '&value=' + diff).then(
+        fetch(baseRangeURL + schema + '&value=' + diff).then(
           async response => {
             // Wait for data to be returned
             let data = await response.json()
@@ -155,9 +157,9 @@ export default function SimpleSelect() {
             const filteredData = data.filter(value => {return value != null})
             // Sort the values for display, based on type
             filteredData.sort((a,b) => {
-              if (typeof(a) === 'number' && typeof(b) === 'number') {
+              if (dataType[diff] === 'number') {
                 return a-b
-              } else if (typeof(a) === 'string' && typeof(b) === 'string') {
+              } else if (dataType[diff] === 'string') {
                 return a.localeCompare(b)
               }
             })
@@ -178,29 +180,30 @@ export default function SimpleSelect() {
       if (diff) {
         // Get the current where selectors
         const curChoices = [...whereSelectorChoices]
-        let diffIndex = null
+        let diffIndex = []
         // Find the index of the where selector that needs to be removed
         curChoices.forEach((value, index) => {
           if (value['value'] === diff) {
-            diffIndex = index
+            diffIndex.push(index)
           }
         })
-        // If index is found, remove where selector and update related values
-        if (diffIndex !== null) {
-          setNumberOfWhereSelectors(state => {
-            const nextValue = state - 1;
-            if (nextValue < 0) {
-              return state;
-            }
-            return nextValue;
-          });
-          // Remove selector from array
-          curChoices.splice(diffIndex, 1)
+        // If indexes are found, remove all where selectors with the removed value
+        if (diffIndex.length > 0) {
+          diffIndex.slice().reverse().forEach(ind => {
+            setNumberOfWhereSelectors(state => {
+              const nextValue = state - 1;
+              if (nextValue < 0) {
+                return state;
+              }
+              return nextValue;
+            });
+            // Remove selector from array
+            curChoices.splice(ind, 1)
+          })
           // Update where selector array
           setWhereSelectorChoices(curChoices)
         }
       }
-
     }
   };
 
