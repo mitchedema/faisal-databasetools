@@ -10,14 +10,14 @@ body {
   min-width: 140px;
 }
 
-.dataTable {
+.dataTable > div {
   height: 400px;
   width: 100%;
   padding-top: 8px;
   border-radius: 8px;
 }
 
-div.dataTable > div > div.MuiDataGrid-root {
+div.dataTable > div > div > div.MuiDataGrid-root {
   background-color: white;
 }
 
