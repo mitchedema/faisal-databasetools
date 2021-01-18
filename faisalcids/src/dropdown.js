@@ -22,45 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useMultiStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
-  },
-  chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 2,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
-  },
-}));
-
-function getStyles(value, values, theme) {
-  return {
-    fontWeight:
-      values.indexOf(value) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const ColorButton = withStyles((theme) => ({
+const ColorButton = withStyles(() => ({
   root: {
     color: '#fff',
     borderColor: green[500],
@@ -73,8 +35,6 @@ const ColorButton = withStyles((theme) => ({
 
 export default function SimpleSelect() {
   const classes = useStyles();
-  const multiclasses = useMultiStyles();
-  const theme = useTheme();
   const [schema, setSchema] = useState('');
   const [values, setValues] = useState([]);
   const [valueOptions, setValueOptions] = useState([]);
@@ -395,6 +355,9 @@ export default function SimpleSelect() {
             </div>
           }
         </div>
+        {
+          //Button to generate csv from returned JSON
+        }
         <div>
           {
             data.length > 0
@@ -407,7 +370,6 @@ export default function SimpleSelect() {
                 background:"linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
                 backgroundColor:"#c123de",
                 borderRadius:"6px",
-                border:"1px solid #a511c0",
                 display:"inline-block",
                 cursor:"pointer","color":"#ffffff",
                 fontSize:"15px",
