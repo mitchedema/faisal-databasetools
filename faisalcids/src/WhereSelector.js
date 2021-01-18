@@ -5,6 +5,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { AsyncPaginate } from 'react-select-async-paginate';
 
+import './WhereSelector.css';
+
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),

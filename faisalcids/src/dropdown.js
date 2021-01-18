@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField'
 import { DataGrid } from '@material-ui/data-grid'
 
 import WhereSelector from './WhereSelector';
-import './App.css';
+import './dropdown.css';
 
 import CsvDownload from 'react-json-to-csv'
 
