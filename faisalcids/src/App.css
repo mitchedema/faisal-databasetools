@@ -1,0 +1,26 @@
+html {
+  background-color: rgb(44, 44, 44);
+}
+
+body {
+  margin: 0.5em
+}
+
+.asySelect {
+  min-width: 140px;
+}
+
+.dataTable {
+  height: 400px;
+  width: 100%;
+  padding-top: 8px;
+  border-radius: 8px;
+}
+
+div.dataTable > div > div.MuiDataGrid-root {
+  background-color: white;
+}
+
+.MuiTablePagination-caption {
+  display: unset !important;
+}
