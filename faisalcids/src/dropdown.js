@@ -14,51 +14,15 @@ import { DataGrid } from '@material-ui/data-grid'
 import WhereSelector from './WhereSelector';
 import './App.css';
 
+import CsvDownload from 'react-json-to-csv'
+
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
 }));
 
-const useMultiStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
-  },
-  chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 2,
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
-  },
-}));
-
-function getStyles(value, values, theme) {
-  return {
-    fontWeight:
-      values.indexOf(value) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const ColorButton = withStyles((theme) => ({
+const ColorButton = withStyles(() => ({
   root: {
     color: '#fff',
     borderColor: green[500],
@@ -71,8 +35,6 @@ const ColorButton = withStyles((theme) => ({
 
 export default function SimpleSelect() {
   const classes = useStyles();
-  const multiclasses = useMultiStyles();
-  const theme = useTheme();
   const [schema, setSchema] = useState('');
   const [values, setValues] = useState([]);
   const [valueOptions, setValueOptions] = useState([]);
@@ -383,15 +345,45 @@ export default function SimpleSelect() {
           {
             data.length > 0
             &&
-            <DataGrid
-              rows={data}
-              columns={columns}
-              pageSize={10}
-              disableSelectionOnClick
-              page={tablePage}
-              onPageChange={(params) => {
-                setTablePage(params.page)
-              }}/>
+            <div>
+              <DataGrid
+                rows={data}
+                columns={columns}
+                pageSize={10}
+                disableSelectionOnClick
+                page={tablePage}
+                onPageChange={(params) => {
+                  setTablePage(params.page)
+                }}/>
+            </div>
+          }
+        </div>
+        {
+          //Button to generate csv from returned JSON
+        }
+        <div>
+          {
+            data.length > 0
+            &&
+            <CsvDownload
+              data={data}
+              filename="query.csv"
+              style={{ //pass other props, like styles
+                boxShadow:"inset 0px 1px 0px 0px #e184f3",
+                background:"linear-gradient(to bottom, #c123de 5%, #a20dbd 100%)",
+                backgroundColor:"#c123de",
+                borderRadius:"6px",
+                display:"inline-block",
+                cursor:"pointer","color":"#ffffff",
+                fontSize:"15px",
+                fontWeight:"bold",
+                padding:"6px 24px",
+                textDecoration:"none",
+                textShadow:"0px 1px 0px #9b14b3"
+                }}
+            >
+              Generate CSV ✨
+            </CsvDownload>
           }
         </div>
     </div>
