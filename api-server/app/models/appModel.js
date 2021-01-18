@@ -35,7 +35,8 @@ Data.getData = async (schema,values,conditions) => {
 Data.getValues = async (schema) => {
   const query_template =
   `SELECT
-    column_name
+    column_name,
+    data_type
   FROM
     information_schema.columns
   WHERE
