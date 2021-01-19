@@ -18,10 +18,25 @@ div.selectors > * {
   width: 200px;
 }
 
-#simple-select-outlined-label, #simple-select-outlined {
+#simple-select-outlined-label, #simple-select-outlined{
   color: #ffffff;
 }
 
 #multiple-chip-label {
   color: #ffffff;
+}
+
+.dataTable > div {
+  height: 400px;
+  width: 100%;
+  padding-top: 8px;
+  border-radius: 8px;
+}
+
+div.dataTable > div > div > div.MuiDataGrid-root {
+  background-color: white;
+}
+
+.MuiTablePagination-caption {
+  display: unset !important;
 }

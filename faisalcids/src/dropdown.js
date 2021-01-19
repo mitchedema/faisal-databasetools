@@ -253,7 +253,7 @@ export default function SimpleSelect() {
             <Autocomplete
               multiple
               autoHighlight
-              id="multiple-autocomplete"
+              id="multiple-chip"
               options={valueOptions}
               onChange={handleChangeMultiple}
               renderInput={(selected, index) => (

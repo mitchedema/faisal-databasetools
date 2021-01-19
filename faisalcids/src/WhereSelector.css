@@ -1,4 +1,4 @@
-div.selectors > * {
+div.selectors, span.selectors > * {
     margin: 0.5em;
 }
 
@@ -8,4 +8,9 @@ div.selectors > * {
 
 #simple-select-outlined-label, #simple-select-outlined {
   color: #ffffff;
+}
+
+.asySelect {
+  min-width: 140px;
+  color: black;
 }
