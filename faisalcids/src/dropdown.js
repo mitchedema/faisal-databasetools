@@ -465,6 +465,7 @@ export default function SimpleSelect() {
               autoHighlight
               disableListWrap
               id="multiple-autocomplete"
+              // id="multiple-chip"
               options={valueOptions}
               onChange={handleChangeMultiple}
               value={values}

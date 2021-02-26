@@ -2,6 +2,10 @@ div.whereSelectors > * {
   margin: 0.5em;
 }
 
+div.selectors, span.selectors > * {
+  margin: 0.5em;
+}
+
 .select-styling {
   width: 200px;
 }
@@ -30,3 +34,7 @@ div.whereSelectors > * {
   align-items: center;
 }
 
+.asySelect {
+  min-width: 140px;
+  color: black;
+}
