@@ -76,4 +76,46 @@ Data.getRange = async (schema,value) => {
     }
 }
 
+Data.getSchemas = async () => {
+  const query_template =
+  `SELECT
+    schema_name
+  FROM
+    information_schema.schemata
+  WHERE
+    schema_name NOT IN ('information_schema', 'pg_catalog', 'public')
+    AND schema_name NOT LIKE 'pg_toast%'
+    AND schema_name NOT LIKE 'pg_temp_%';`
+  try{
+    const client = await psql.connect();
+    const result = await client.query(query_template);
+    await client.release();
+    return result;
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+Data.getQuery = async (schema,values,conditions) => {
+  const query_template =
+  `SELECT DISTINCT
+    ${values}
+  FROM
+    ${schema}.dataset,
+    ${schema}.subject,
+    ${schema}.visit,
+    ${schema}.repeatmeasure
+  WHERE
+    dataset.id = subject.datasetid AND
+    subject.id = visit.subjectid AND
+    visit.id = repeatmeasure.visitid
+    ${conditions};
+    `
+  try{
+    return { query: query_template };
+  } catch(err) {
+    console.log(err)
+  }
+}
+
 module.exports= Data;
