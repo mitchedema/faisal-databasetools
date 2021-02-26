@@ -9,13 +9,86 @@ body {
 .asySelect {
   min-width: 140px;
   color: black;
+  font: inherit;
+  font-size: inherit;
+  min-height: 1.1876em;
 }
 
+.asySelect > div[class^=" css-"][class$="-control"] {
+  background-color: inherit;
+  cursor: text;
+  border-color: rgba(0, 0, 0, 0.24);
+  min-height: 56px;
+}
+
+.asySelect > div[class^=" css-"][class$="-control"]:hover {
+  border-color: black;
+}
+
+div[class^=" css-"][class$="-menu"] {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+div[class^=" css-"][class$="-singleValue"] {
+  color: white;
+  font-size: 1rem;
+}
+
+div[class^="css-"][class$="-Input"] {
+  color: white;
+  font-size: 1rem;
+}
+
+div[class^=" css-"][class$="-option"] {
+  font-size: 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+}
+
+div[class=" css-9gakcf-option"] {
+  background-color: rgba(0, 0, 0, 0.08);
+  color: black;
+}
+
+div[class=" css-1n7v3ny-option"] {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+span[class^=" css-"][class$="-indicatorSeparator"] {
+  display: none !important;
+}
+
+svg[class^="css-"][class$="-Svg"] {
+  fill: rgba(0, 0, 0, 0.54);
+  stroke: rgba(0, 0, 0, 0.54);
+  cursor: pointer;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  margin-right: -2px;
+}
+
+svg[class^="css-"][class$="-Svg"]:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+svg[class^="css-"][class$="-Svg"] path {
+  d: path('M6 9l4 4 4-4z')
+}
+
+
 .dataTable > div {
-  height: 400px;
+  height: 80vh;
   width: 100%;
-  padding-top: 8px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 div.dataTable > div > div > div.MuiDataGrid-root {

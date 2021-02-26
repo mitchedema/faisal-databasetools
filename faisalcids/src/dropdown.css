@@ -1,11 +1,11 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
   background-color: #686a70;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+  /* justify-content: start; */
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -22,6 +22,91 @@ div.selectors > * {
   color: #ffffff;
 }
 
+#multiple-autocomplete-label {
+  color: #ffffff;
+}
+
 #multiple-chip-label {
   color: #ffffff;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.import {
+  color: white;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  height: 24px;
+  padding: 5px 15px;
+  margin: 8px;
+  position: absolute;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  text-transform: uppercase;
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+              box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+              border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.import:hover {
+  background-color: #66bb6a;
+  border-color: #3f51b5;
+  color: black;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.buttons > span {
+  padding-left: 8px;
+}
+
+.MuiCardContent-root {
+  border-radius: 14px;
+  background-color: rgb(70 70 70);
+}
+
+.MuiCardContent-root:last-child {
+  padding-bottom: 16px !important;
+}
+
+.MuiPaper-root.MuiCard-root.MuiPaper-elevation1.MuiPaper-rounded {
+  border-radius: 14px;
+  background-color: rgb(70 70 70);
+  overflow: unset;
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiAutocomplete-inputRoot.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
+  max-width: 410px;
+  min-width: 410px;
+}
+
+.MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"] .MuiAutocomplete-input {
+  color: white;
+}
+
+.whereSelector {
+  margin-top: 14px;
+}
+
+.autocomplete {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.schema .MuiSelect-select {
+  text-transform: capitalize;
+}
+
+.schema.MuiMenuItem-root {
+  text-transform: capitalize;
 }

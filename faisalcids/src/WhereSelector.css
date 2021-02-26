@@ -1,11 +1,32 @@
-div.selectors > * {
-    margin: 0.5em;
+div.whereSelectors > * {
+  margin: 0.5em;
 }
 
 .select-styling {
-    width: 200px;
-  }
+  width: 200px;
+}
 
 #simple-select-outlined-label, #simple-select-outlined {
   color: #ffffff;
 }
+
+.otherSelector {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  margin-left: 2em;
+}
+
+.otherSelectors > div {
+  margin-right: 4px;
+}
+
+.whereSelectors > div {
+  margin-right: 4px;
+}
+
+.whereSelectors {
+  display: flex;
+  align-items: center;
+}
+
