@@ -197,15 +197,15 @@ export default function SimpleSelect() {
 
   // Exports the query and selections to a txt file, allowing the user to re-import their selections
   function exportQuery() {
-    // Assign all variables to be exported as a copy to an object
+    // Assign all exported variables to an object
     const exp = {}
-    exp['whereSelector'] = [...whereSelectorChoices];
-    exp['schema'] = [...schema];
-    exp['values'] = [...values];
-    exp['dataType'] = [...dataType];
-    exp['numberOfWhereSelectors'] = [...numberOfWhereSelectors];
-    exp['whereSelectorOptions'] = [...whereSelectorOptions];
-    exp['valueOptions'] = [...valueOptions];
+    exp['whereSelector'] = whereSelectorChoices;
+    exp['schema'] = schema;
+    exp['values'] = values;
+    exp['dataType'] = dataType;
+    exp['numberOfWhereSelectors'] = numberOfWhereSelectors;
+    exp['whereSelectorOptions'] = whereSelectorOptions;
+    exp['valueOptions'] = valueOptions;
     // Generate a request based on the current selections
     const request = generateRequest(baseQueryURL);
     // Declare headers for the GET request
@@ -219,25 +219,12 @@ export default function SimpleSelect() {
       const spacer = '########################\n';
       query = data.query;
       let expJSON = '';
-      expJSON += spacer;
-      expJSON += '\n';
-      expJSON += 'Query\n';
-      expJSON += '\n';
-      expJSON += spacer;
-      expJSON += '\n';
+      expJSON += spacer + '\n' + 'Query\n' + '\n' + spacer + '\n';
       // Insert query
       expJSON += query;
-      expJSON += '\n';
-      expJSON += spacer;
-      expJSON += '\n';
-      expJSON += '\n';
-      expJSON += '\n';
-      expJSON += spacer;
-      expJSON += '\n';
+      expJSON += '\n' + spacer + '\n\n\n' + spacer + '\n';
       expJSON += 'Exported Selections\n';
-      expJSON += '\n';
-      expJSON += spacer;
-      expJSON += '\n';
+      expJSON += '\n' + spacer + '\n';
       // Insert metadata for re-import as a JSON string
       expJSON += JSON.stringify(exp);
       const contentType = "application/json;charset=utf-8;";
