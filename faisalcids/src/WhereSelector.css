@@ -2,10 +2,6 @@ div.whereSelectors > * {
   margin: 0.5em;
 }
 
-div.selectors, span.selectors > * {
-  margin: 0.5em;
-}
-
 .select-styling {
   width: 200px;
 }

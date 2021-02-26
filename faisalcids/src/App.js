@@ -1,5 +1,5 @@
 import SimpleSelect from "./dropdown"
-import './App.css';
+import './App.css'
 
 function App() {
   return (
