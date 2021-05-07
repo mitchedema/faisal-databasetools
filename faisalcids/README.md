@@ -32,7 +32,7 @@ The front end can now be accessed in the browser by navigating to http://localho
 # Components
 
 ## `dropdown.js`
-This component houses all of the selectors and buttons that are present in the interface. Within this component exists various other components that are children of the dropdown component. All data is shared from the parent component to the children component.
+This component houses all of the selectors and buttons that are present in the interface. Within this component exists various other components that are children of the dropdown component. All data is shared from the parent component to the children components.
 
 ### Children Components
 * `Schema` selector
