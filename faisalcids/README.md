@@ -28,3 +28,42 @@ $ npm start
 ```
 
 The front end can now be accessed in the browser by navigating to http://localhost:3000
+
+---
+
+# Components
+
+## `dropdown.js`
+This component houses all of the selectors and buttons that are present in the interface. Within this component exists various other components that are children of the dropdown component. All data is shared from the parent component to the children component.
+
+### Children Components
+* `Schema` selector
+    * Allows selection of database schema
+* `Values` selector
+    * Lists values that can be selected from database
+* `WhereSelector`
+    * Selector set specifying `WHERE` conditions to be applied in query
+
+## `WhereSelector.js`
+This component contains a set of three selectors allowing for a `field`, `relation`, and `value` to be specified to formulate a query condition. Any number of conditions can be added by simply pressing a designated addition button.
+
+* `field` selector
+    * Specifies the database field that is being conditioned, only fields present in the `values` selector are available as options here
+* `relation` selector
+    * Specifies the type of comparison to be applied (i.e. <, >, =)
+* `value` selector
+    * The value to be compared against, constraining the returned `field` value
+
+### Children Components
+* OtherSelector
+    * Selector set allowing logical `AND` or `OR` operations to be applied between conditions for a given field
+
+## `OtherSelector.js`
+This component contains another set of selectors similar to the `WhereSelector`, however, these have the `field` value enforced by its parent `WhereSelector`. The `OtherSelector` allows for logical operations to be applied between conditions if multiple are applied to a single field. Any number of these selectors can also be added by clicking the designated addition button.
+
+* `operation` selector
+    * Specifies the logical operation (`AND`/`OR`) to be applied between conditions
+* `relation` selector
+    * Same as the `WhereSelector`, specifying the type of comparison to be applied
+* `value` selector
+    * Same as the `WhereSelector`, specifying the value to compare against in the condition
