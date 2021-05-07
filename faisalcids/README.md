@@ -29,8 +29,6 @@ $ npm start
 
 The front end can now be accessed in the browser by navigating to http://localhost:3000
 
----
-
 # Components
 
 ## `dropdown.js`
