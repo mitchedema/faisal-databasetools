@@ -3,9 +3,9 @@ const { Pool } = require('pg');
 // create a client instance of the pg library
 const pool = new Pool({
     user: "postgres",
-    host: "localhost",
+    host: "cids-db",
     database: "faisalcids",
-    password: "1234",
+    password: "yktsjEEbQaqX0h70Ww9K",
     port: "5432"
 });
 
