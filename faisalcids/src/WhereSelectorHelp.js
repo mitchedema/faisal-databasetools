@@ -12,7 +12,7 @@ import { AsyncPaginate } from 'react-select-async-paginate';
 import { orange } from '@material-ui/core/colors';
 import classNames from 'classnames';
 import OtherSelector from './OtherSelector';
-import './WhereSelector.css'
+import './WhereSelector.css';
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function WhereSelector(props) {
+export default function WhereSelectorHelp(props) {
   const classes = useStyles();
 
   const {
@@ -30,7 +30,8 @@ export default function WhereSelector(props) {
     whereSelectorOptions,
     setNumberOfWhereSelectors,
     whereSelectorChoices,
-    dataType
+    dataType,
+    addOther
   } = props;
 
   const [curSelectorValue, setCurSelectorValue] = useState('');
@@ -76,7 +77,7 @@ export default function WhereSelector(props) {
     })
     setWhereSelectorChoices(curChoices);
     console.log(whereSelectorOptions);
-  }, [whereSelectorOptions])
+  }, [])
 
   // Handles the change of the value selector
   const handleChangeSelect1 = (event) => {
@@ -290,12 +291,12 @@ export default function WhereSelector(props) {
           <IconButton
             className="iconButton"
             disabled={whereSelectorChoices[idx]['value'] === '' || getDisabledFields()}
-            onClick={
-              () => {
-                const curChoices = [...whereSelectorChoices]
-                console.log(curChoices)
-                const curConditions = curChoices[idx]['otherConditions']
-                // setNumberOfOtherConds(state => state + 1)
+            onClick={() => {
+              const curChoices = [...whereSelectorChoices]
+              console.log(curChoices)
+              const curConditions = curChoices[idx]['otherConditions']
+              // setNumberOfOtherConds(state => state + 1)
+              if (curConditions.length <= 1 && addOther) {
                 curConditions.push({
                   relation: '=',
                   limit: '',
@@ -306,7 +307,7 @@ export default function WhereSelector(props) {
                 })
                 setWhereSelectorChoices(curChoices)
               }
-            }
+            }}
           >
             <Plus/>
           </IconButton>
@@ -314,20 +315,7 @@ export default function WhereSelector(props) {
         <Tooltip title="Remove Condition" aria-label="remove" placement="right">
           <IconButton
             className="iconButton"
-            onClick={
-              () => {
-                setNumberOfWhereSelectors(state => {
-                  const nextValue = state - 1;
-                  if (nextValue < 0) {
-                    return state;
-                  }
-                  return nextValue;
-                });
-                const curChoices = [...whereSelectorChoices]
-                curChoices.splice(idx, 1)
-                setWhereSelectorChoices(curChoices);
-              }
-            }
+            onClick={() => {}}
           >
             <Close/>
           </IconButton>
@@ -335,7 +323,7 @@ export default function WhereSelector(props) {
       </span>
       <div>
         {
-          whereSelectorChoices[idx]['otherConditions'].length > 0
+          whereSelectorChoices[idx]['otherConditions'].length > 0 && addOther
           &&
           whereSelectorChoices[idx]['otherConditions'].map((_, index) => (
             <React.Fragment key={"otherCondition-" + index.toString()}>
@@ -352,13 +340,13 @@ export default function WhereSelector(props) {
                   <IconButton
                     className="iconButton"
                     disabled={getDisabledFields()}
-                    onClick={
-                      () => {
+                    onClick={() => {
+                      if (addOther) {
                         const curChoices = [...whereSelectorChoices]
                         curChoices[idx]['otherConditions'].splice(index, 1)
                         setWhereSelectorChoices(curChoices);
                       }
-                    }
+                    }}
                   >
                     <Close/>
                   </IconButton>

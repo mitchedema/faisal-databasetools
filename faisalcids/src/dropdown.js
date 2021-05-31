@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import { green } from '@material-ui/core/colors';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { ListboxComponent } from './ListBox';
 import { DataGrid } from '@material-ui/data-grid';
+import IconButton from '@material-ui/core/IconButton';
+import { Plus, InformationOutline } from 'mdi-material-ui';
 
 import WhereSelector from './WhereSelector';
 import './dropdown.css';
@@ -37,7 +39,25 @@ const ColorButton = withStyles(() => ({
   },
 }))(Button);
 
-export default function SimpleSelect() {
+const InfoTooltip = withStyles(() => ({
+  tooltip: {
+    backgroundColor: '#464646',
+    color: 'white',
+    maxWidth: 200,
+    fontSize: '0.8em',
+  }
+}))(Tooltip);
+
+const InfoIcon = withStyles(() => ({
+  root: {
+    marginRight: 8,
+    fill: '#4a4a4a',
+    right: 0,
+    position: 'absolute'
+  }
+}))(InformationOutline);
+
+export default function SimpleSelect(props) {
   const classes = useStyles();
   const [schema, setSchema] = useState('');
   const [values, setValues] = useState([]);
@@ -50,6 +70,7 @@ export default function SimpleSelect() {
   const [tablePage, setTablePage] = useState(1);
   const [dataType, setDataType] = useState({});
   const [schemas, setSchemas] = useState([]);
+  const [infoTranslation, setInfoTranslation] = useState({});
 
   useEffect(() => {
     getSchemas();
@@ -88,7 +109,7 @@ export default function SimpleSelect() {
   }
 
   // Handles changes to the schema selector and populates the field selector values
-  const handleChangeSelect = (event) => {
+  const handleChangeSelect = async (event) => {
     // Set schema value to selected value
     setSchema(event.target.value);
     const curSchema = event.target.value
@@ -98,30 +119,43 @@ export default function SimpleSelect() {
     setWhereSelectorOptions({})
     setNumberOfWhereSelectors(0)
     // Fetch all values present in schema
-    fetch(baseValueURL + curSchema).then(async response => {
-      // Wait for data to be returned
-      let data = await response.json()
-      let dataTypes = {}
-      // Create a datatypes object, containing type information for each value in schema
-      data.forEach(value => {
-        dataTypes[value.column_name] = dataTypeTranslation[value.data_type]
-      })
-      // Assign datatypes to datatype object
-      setDataType(dataTypes)
-      // Create array of all fields in schema
-      data = data.map(value => value.column_name)
-      // Filter values such that only unique fields exist in array
-      // Changes can be made to avoid needing this
-      data = data.filter(onlyUnique)
-      // Sort values for display
-      data.sort()
-      // Set options for value selector to sorted and filtered field array
-      setValueOptions(data)
-    })
+    const [dataTypes, valInfo, valOptions] = await getSchemaData(curSchema)
+    // Assign datatypes to datatype object
+    setDataType(dataTypes)
+    setInfoTranslation(valInfo)
+    // Set options for value selector to sorted and filtered field array
+    setValueOptions(valOptions)
   };
 
+  async function getSchemaData (curSchema) {
+    const response = await fetch(baseValueURL + curSchema)
+    // Wait for data to be returned
+    const allData = await response.json()
+    console.log(allData)
+    let data = allData['data']
+    const info = allData['info']
+    let dataTypes = {}
+    let valInfo = {}
+    // Create a datatypes object, containing type information for each value in schema
+    data.forEach(value => {
+      dataTypes[value.column_name] = dataTypeTranslation[value.data_type]
+    })
+    Object.keys(info).forEach(value => {
+      valInfo[value.toLowerCase()] = info[value]
+    })
+    console.log(dataTypes)
+    // Create array of all fields in schema
+    data = data.map(value => value.column_name.toLowerCase())
+    // Filter values such that only unique fields exist in array
+    // Changes can be made to avoid needing this
+    data = data.filter(onlyUnique)
+    // Sort values for display
+    data.sort()
+    return [dataTypes, valInfo, data]
+  }
+
   // Handles when the multiple selector is changed, and populates where selectors
-  const handleChangeMultiple = (event, values) => {
+  const handleChangeMultiple = async (event, values) => {
     // Set selector value to values selected
     setValues(values);
     const newValues = values
@@ -134,27 +168,8 @@ export default function SimpleSelect() {
       diff = newValues.filter(x => curValues.indexOf(x) === -1)[0]
       if (diff) {
         // Fetch value options for the selected field
-        fetch(baseRangeURL + schema + '&value=' + diff).then(
-          async response => {
-            // Wait for data to be returned
-            let data = await response.json()
-            // Create array from values returned
-            data = data.map(value => value[diff])
-            // Filter values such that null is removed from array
-            // Changes can be made to avoid needing this
-            const filteredData = data.filter(value => {return value != null})
-            // Sort the values for display, based on type
-            filteredData.sort((a,b) => {
-              if (dataType[diff] === 'number') {
-                return a-b
-              } else if (dataType[diff] === 'string') {
-                return a.localeCompare(b)
-              }
-            })
-            // Assign options to object containing all past/present selected values
-            setWhereSelectorOptions({...whereSelectorOptions, [diff]: filteredData})
-          }
-        )
+        const option = await getSelectorOptions(schema, diff, dataType)
+        setWhereSelectorOptions({...whereSelectorOptions, [diff]: option})
       }
     } else {
       // Case when value is removed
@@ -195,17 +210,40 @@ export default function SimpleSelect() {
     }
   };
 
+  async function getSelectorOptions(schema, val, dataType) {
+    const response = await fetch(baseRangeURL + schema + '&value=' + val)
+    // Wait for data to be returned
+    let data = await response.json()
+    // Create array from values returned
+    data = data.map(value => value[val])
+    const filteredData = data.filter(value => {return value != null})
+    // Sort the values for display, based on type
+    filteredData.sort((a,b) => {
+      if (dataType[val] === 'number') {
+        return a-b
+      } else if (dataType[val] === 'string') {
+        return a.localeCompare(b)
+      } else {
+        return undefined
+      }
+    })
+    return filteredData;
+  }
+
   // Exports the query and selections to a txt file, allowing the user to re-import their selections
   function exportQuery() {
     // Assign all exported variables to an object
     const exp = {}
-    exp['whereSelector'] = whereSelectorChoices;
+    exp['whereSelector'] = [...whereSelectorChoices]
+    exp['whereSelector'].forEach(selector => {
+      delete selector['options']
+      selector['otherConditions'].forEach(otherSelector => {
+        delete otherSelector['options']
+      })
+    })
     exp['schema'] = schema;
     exp['values'] = values;
-    exp['dataType'] = dataType;
     exp['numberOfWhereSelectors'] = numberOfWhereSelectors;
-    exp['whereSelectorOptions'] = whereSelectorOptions;
-    exp['valueOptions'] = valueOptions;
     // Generate a request based on the current selections
     const request = generateRequest(baseQueryURL);
     // Declare headers for the GET request
@@ -219,7 +257,7 @@ export default function SimpleSelect() {
       const spacer = '########################\n';
       query = data.query;
       let expJSON = '';
-      expJSON += spacer + '\n' + 'Query\n' + '\n' + spacer + '\n';
+      expJSON += spacer + '\nQuery\n\n' + spacer + '\n';
       // Insert query
       expJSON += query;
       expJSON += '\n' + spacer + '\n\n\n' + spacer + '\n';
@@ -259,20 +297,36 @@ export default function SimpleSelect() {
           file = lines[startIndex + 4];
           // Store the results of the file into the designated variables
           storeResults(file);
+        } else {
+          alert('Improper file uploaded');
         }
       }
-      function storeResults(result) {
+      async function storeResults(result) {
+        let options = {};
+        let promiseObjArr = [];
         // Store all selections and variables into their designated variables
         if (result) {
           // Convert JSON string to an object
           file = JSON.parse(result);
-          setValues(file.values);
+          const [dataTypes, infoVals, valOptions] = await getSchemaData(file.schema);
           setSchema(file.schema);
-          setDataType(file.dataType);
-          setNumberOfWhereSelectors(file.numberOfWhereSelectors);
-          setWhereSelectorOptions(file.whereSelectorOptions);
-          setValueOptions(file.valueOptions);
+          setValues(file.values);
+          setDataType(dataTypes);
+          setInfoTranslation(infoVals);
+          setValueOptions(valOptions);
           setWhereSelectorChoices(file.whereSelector);
+          setNumberOfWhereSelectors(file.numberOfWhereSelectors);
+          file.values.forEach(async value => {
+            const option = getSelectorOptions(file.schema, value, dataTypes);
+            promiseObjArr.push({name: value, promise: option});
+          })
+          const promiseArr = promiseObjArr.map(promise => promise['promise']);
+          const allOptions = await Promise.all(promiseArr);
+          promiseObjArr.forEach((promise, index) => {
+            options[promise['name']] = allOptions[index];
+          })
+          console.log(options);
+          setWhereSelectorOptions(options);
         }
       }
     }
@@ -284,27 +338,42 @@ export default function SimpleSelect() {
   // Ensure all selectors have a value populated
   function handleValidation() {
     let formIsValid = true;
+    const whereSelector = [...whereSelectorChoices]
     // Loop through each whereSelector and determine if any fields are unselected
-    whereSelectorChoices.forEach(selector => {
+    whereSelectorChoices.forEach((selector, index) => {
       const field = selector['value'];
       const relation = selector['relation'];
       const limit = selector['limit'];
+      const notNull = selector['notNull'];
       // If any field is unselected, indicate that the form is invalid
       if (field === '' || relation === '' || limit === '') {
-        formIsValid = false;
+        if (!notNull) {
+          whereSelector[index]['error'] = true;
+          formIsValid = false;
+        } else {
+          if (field === '') {
+            whereSelector[index]['error'] = true;
+            formIsValid = false;
+          }
+        }
       }
       // Loop through each otherCondition selector
       const otherConditions = selector['otherConditions'];
-      otherConditions.forEach(condition => {
+      otherConditions.forEach((condition, otherIndex) => {
         const condRelation = condition['relation'];
         const condLimit = condition['limit'];
         const condType = condition['condition'];
         // If any field is unselected, indicate that the form is invalid
         if (condRelation === '' || condLimit === '' || condType === '') {
-          formIsValid = false;
+          // whereSelector[index]['error'] = true;
+          if (!notNull) {
+            whereSelector[index]['otherConditions'][otherIndex]['error'] = true;
+            formIsValid = false;
+          }
         }
       })
     })
+    setWhereSelectorChoices(whereSelector);
     return formIsValid;
   }
 
@@ -320,39 +389,43 @@ export default function SimpleSelect() {
       const fieldType = dataType[field];
       // Get the selected relation
       const relation = selector['relation'];
+      const notNull = selector['notNull'];
       // Get the selected limit
       let limit = selector['limit'];
       // If the field type is not a number or boolean, put quotes around it
       if (fieldType !== 'number' && fieldType !== 'boolean') {
         limit = putQuote(limit);
       }
-      // Add the three components together, appended with a ','
-      if (field && relation && limit) {
-        whereChoices += field + relation + limit;
-      }
-      const otherConditions = selector['otherConditions'];
-      otherConditions.forEach((condition, index) => {
-        const condRelation = condition['relation'];
-        let condLimit = condition['limit'];
-        const condType = condition['condition'];
-        if (fieldType !== 'number' && fieldType !== 'boolean') {
-          condLimit = putQuote(condLimit);
+      if (notNull) {
+        whereChoices += field + '=NOTNULL';
+      } else {
+        // Add the three components together, appended with a ','
+        if (field && relation && limit) {
+          whereChoices += field + relation + limit;
         }
-        if (condRelation && condLimit && condType) {
-          if (condType === 'AND') {
-            whereChoices += ',' + field + condRelation + condLimit;
-          } else if (condType === 'OR') {
-            whereChoices += ';' + field + condRelation + condLimit;
+        const otherConditions = selector['otherConditions'];
+        otherConditions.forEach((condition, index) => {
+          const condRelation = condition['relation'];
+          let condLimit = condition['limit'];
+          const condType = condition['condition'];
+          if (fieldType !== 'number' && fieldType !== 'boolean') {
+            condLimit = putQuote(condLimit);
           }
-        }
-      })
+          if (condRelation && condLimit && condType) {
+            if (condType === 'AND') {
+              whereChoices += ',' + field + condRelation + condLimit;
+            } else if (condType === 'OR') {
+              whereChoices += ';' + field + condRelation + condLimit;
+            }
+          }
+        })
+      }
 
       // Only append 1 less comma than the number of where selectors
       if (index < numberOfWhereSelectors - 1) {
         whereChoices += ',';
       }
     });
-
     let request = '';
     if (schema && joinedValues) {
       // Formulate the request
@@ -386,20 +459,107 @@ export default function SimpleSelect() {
         const data = await response.json();
         // Populate table with data when data is returned
         if (data.length >= 0) {
-          // Add an id field to each record for table display
           data.forEach((record, index) => {
-            record.id = index
+            record.id = index;
           })
-          // Assign data
-          setData(data);
-          // Create column name array for table display
-          const columns = values.map(value => (
-            {field: value}
-          ));
-          // Assign column names
-          setColumns(columns)
-          // Move table page index back to the first page
-          setTablePage(1)
+          const xnatRoute = 'http://localhost:4000/xnat/data/experiments/?format=json&columns=visit_id,subject_ID,subject_label,ID';
+          let xnatData = {};
+          fetch(xnatRoute, headers).then(async response => {
+            if (response.ok) {
+              xnatData = await response.json();
+  
+              if (Object.keys(xnatData).length >= 0) {
+                // Add an id field to each record for table display
+                data.forEach((record, index) => {
+                  record.id = index;
+                  const matchingRecord = xnatData.ResultSet.Result.filter(obj => {
+                    return obj.project === record.name && obj.subject_label === record.rid && obj.visit_id === record.viscode;
+                  })
+                  console.log(matchingRecord)
+                  if (matchingRecord.length > 0) {
+                    const rec = matchingRecord[0];
+                    record.xnatURL = 'http://localhost:11111/data/projects/' + rec.project + '/subjects/' + rec.subject_label + '/experiments/' + rec.ID;
+                  } else {
+                    record.xnatURL = '';
+                  }
+                })
+                console.log(data);
+                // Assign data
+                setData(data);
+                // Create column name array for table display
+                let columns = [];
+                if (values.length <= 10) {
+                  columns = values.map(value => (
+                    {
+                      field: value,
+                      flex: 1,
+                      type: dataType[value]
+                    }
+                  ));
+                  columns.push({
+                    field: 'xnatURL',
+                    headerName: 'XNAT URL',
+                    renderCell: (params) => {
+                      const URL = params.getValue('xnatURL');
+                      const splitURL = URL.split('/');
+                      const label = splitURL[splitURL.length-1];
+                      return(URL ? <a href={URL} target="_blank" rel="noreferrer noopener">{label}</a> : <p></p>)
+                    },
+                    flex: 1
+                  })
+                } else {
+                  columns = values.map(value => (
+                    {
+                      field: value,
+                      width: 150,
+                      resizable: true,
+                      type: dataType[value]
+                    }
+                  ));
+                  columns.push({
+                    field: 'xnatURL',
+                    headerName: 'XNAT URL',
+                    renderCell: (params) => {
+                      const URL = params.getValue('xnatURL');
+                      const splitURL = URL.split('/');
+                      const label = splitURL[splitURL.length-1];
+                      return(URL ? <a href={URL} target="_blank" rel="noreferrer noopener">{label}</a> : <p></p>)
+                    },
+                    width: 150
+                  })
+                }
+                console.log(columns)
+                // Assign column names
+                console.log(data);
+                // setData(data);
+                setColumns(columns)
+                // Move table page index back to the first page
+                setTablePage(1)
+              }
+            } else {
+              let columns = []
+              if (values.length <= 10) {
+                columns = values.map(value => (
+                  {
+                    field: value,
+                    flex: 1,
+                    type: dataType[value]
+                  }
+                ));
+              } else {
+                columns = values.map(value => (
+                  {
+                    field: value,
+                    width: 150,
+                    resizable: true,
+                    type: dataType[value]
+                  }
+                ));
+              }
+              setData(data)
+              setColumns(columns)
+            }
+          })
         }
       });
     } else {
@@ -430,10 +590,10 @@ export default function SimpleSelect() {
         </Select>
       </FormControl>
       <span>
-        <ColorButton variant="outlined" color="primary" className={classes.margin} onClick={handleQuery}>
+        <ColorButton variant="outlined" color="primary" className={classes.margin} onClick={handleQuery} disabled={schema === '' || values.length === 0}>
           Query
         </ColorButton>
-        <ColorButton variant="outlined" color="secondary" className={classes.margin} onClick={exportQuery}>
+        <ColorButton variant="outlined" color="secondary" className={classes.margin} onClick={exportQuery} disabled={schema === '' || values.length === 0}>
           Export
         </ColorButton>
         <label className="import">
@@ -456,10 +616,19 @@ export default function SimpleSelect() {
               options={valueOptions}
               onChange={handleChangeMultiple}
               value={values}
+              ListboxComponent={ListboxComponent}
+              renderOption={(option, { selected }) => (
+                <React.Fragment>
+                  {option}
+                  <InfoTooltip title={infoTranslation[option] ? <React.Fragment>{infoTranslation[option]}</React.Fragment> : <React.Fragment>{'No definition'}</React.Fragment>} placement="left">
+                    <InfoIcon/>
+                  </InfoTooltip>
+                </React.Fragment>
+              )}
               renderInput={(selected, index) => (
                 <TextField
                   {...selected}
-                  label="Values"
+                  label="Fields"
                   variant="outlined"/>
               )}/>
           </FormControl>
@@ -468,14 +637,8 @@ export default function SimpleSelect() {
           values.length > 0
           &&
           <Tooltip title="Add Condition" aria-label="add" placement="bottom">
-            <Fab
-              color="primary"
-              style={{
-                width: 44,
-                height: 44,
-                marginLeft: 8
-              }}
-              aria-label="add"
+            <IconButton
+              className="iconButton"
               onClick={
                 () => {
                   setNumberOfWhereSelectors(state => state + 1);
@@ -485,14 +648,16 @@ export default function SimpleSelect() {
                     limit: '',
                     value: '',
                     options: [],
+                    error: false,
+                    notNull: false,
                     otherConditions: []
                   })
                   setWhereSelectorChoices(curChoices)
                 }
               }
-              >
-              +
-            </Fab>
+            >
+              <Plus/>
+            </IconButton>
           </Tooltip>
         }
       </div>
@@ -559,7 +724,7 @@ export default function SimpleSelect() {
         </div>
         <div className="dataTable">
           {
-            data.length >= 0 && columns.length > 0
+            data.length > 0
             &&
             <div>
               <DataGrid

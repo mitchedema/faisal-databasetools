@@ -17,40 +17,46 @@ function groupConditions(conditions) {
       delims.push(conditions[i]);
     }
   }
-  const andConditions = parsedConditions.map(
+  const queryConditions = parsedConditions.map(
     (condition, index) => {
+      let curCondition;
+      if (condition.includes('NOTNULL')) {
+        curCondition = fields[index] + ' IS NOT NULL'
+      } else {
+        curCondition = condition
+      }
       const splitCondition = condition.split(relationDelimiters)[0]
       if (index === 0) {
         if (fields.filter(field => field === splitCondition).length === 1) {
-          return `(${condition})\n`
+          return `(${curCondition})\n`
         }
-        return `(${condition}`
+        return `(${curCondition}`
       } else {
         if (delims[index-1] === ',') {
           if (splitCondition === fields[index-1] && splitCondition === fields[index+1]) {
-            return ` AND ${condition}`
+            return ` AND ${curCondition}`
           } else if (splitCondition !== fields[index-1] && splitCondition === fields[index+1]) {
-            return `    AND (${condition}`
+            return `    AND (${curCondition}`
           } else if (splitCondition !== fields[index+1] && splitCondition === fields[index-1]) {
-            return ` AND ${condition})\n`
+            return ` AND ${curCondition})\n`
           } else {
-            return `    AND (${condition})\n`
+            return `    AND (${curCondition})\n`
           }
         } else {
           if (splitCondition === fields[index-1] && splitCondition === fields[index+1]) {
-            return ` OR ${condition}`
+            return ` OR ${curCondition}`
           } else if (splitCondition !== fields[index-1] && splitCondition === fields[index+1]) {
-            return `    OR (${condition}`
+            return `    OR (${curCondition}`
           } else if (splitCondition !== fields[index+1] && splitCondition === fields[index-1]) {
-            return ` OR ${condition})\n`
+            return ` OR ${curCondition})\n`
           } else {
-            return `    OR (${condition})\n`
+            return `    OR (${curCondition})\n`
           }
         }
       }
     }
   );
-  groupedConditions = 'AND (' + andConditions.join("") + ')';
+  groupedConditions = 'AND (' + queryConditions.join("") + ')';
   return groupedConditions;
 }
 
@@ -61,12 +67,14 @@ exports.get_data = async function (req,res) {
     const schema = req.query.schema;
     const values = req.query.values;
     let conditions = req.query.conditions;
+    console.log(conditions);
     if (!conditions) {
       conditions = '\n';
     } else {
       //set up conditional statement in SQL format
       conditions = groupConditions(conditions);
     }
+    console.log(conditions);
     const result = await Data.getData(schema,values,conditions);
 
     return res.status(200).json(result.rows);
@@ -81,7 +89,7 @@ exports.get_values = async function (req,res) {
     const schema = req.query.schema;
     const result = await Data.getValues(schema);
 
-    return res.status(200).json(result.rows);
+    return res.status(200).json(result);
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -103,8 +111,13 @@ exports.get_range = async function (req,res) {
 exports.get_schemas = async function (req,res) {
   try {
     const result = await Data.getSchemas();
-
-    return res.status(200).json(result.rows);
+    
+    if (result.rows.length > 0) {
+      return res.status(200).json(result.rows);
+    } else {
+      const defResult = { schema_name: 'public' };
+      return res.status(200).json(defResult);
+    }
   } catch (err) {
     return res.status(500).json(err);
   }

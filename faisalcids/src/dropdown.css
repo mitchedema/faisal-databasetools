@@ -11,7 +11,9 @@
 }
 
 div.selectors > * {
-  margin: 0.5em !important;
+  margin-top: 0.5em !important;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
 }
 
 .select-styling {
@@ -69,6 +71,10 @@ input[type="file"] {
   padding-left: 8px;
 }
 
+.MuiButton-outlinedSecondary.Mui-disabled {
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
 .MuiCardContent-root {
   border-radius: 14px;
   background-color: rgb(70 70 70);
@@ -85,7 +91,7 @@ input[type="file"] {
 }
 
 .MuiInputBase-root.MuiOutlinedInput-root.MuiAutocomplete-inputRoot.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd.MuiOutlinedInput-adornedEnd {
-  max-width: 410px;
+  max-width: 512px;
   min-width: 410px;
 }
 
@@ -113,15 +119,19 @@ input[type="file"] {
 
 .dataTable > div {
   height: 400px;
-  width: 100%;
+  /* width: 100%; */
   padding-top: 8px;
   border-radius: 8px;
 }
 
-div.dataTable > div > div > div.MuiDataGrid-root {
-  background-color: white;
+div.dataTable div.MuiDataGrid-root {
+  background-color: white !important;
 }
 
 .MuiTablePagination-caption {
   display: unset !important;
+}
+
+.infoIcon svg {
+  fill: rgb(44, 44, 44);
 }

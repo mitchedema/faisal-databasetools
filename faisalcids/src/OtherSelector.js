@@ -7,6 +7,7 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { AsyncPaginate } from 'react-select-async-paginate';
 import { orange } from '@material-ui/core/colors';
+import classNames from 'classnames';
 import OtherSelector from './OtherSelector';
 
 import './WhereSelector.css'
@@ -25,10 +26,14 @@ export default function WhereSelector(props) {
     parentIdx,
     whereSelectorChoices,
     setWhereSelectorChoices,
-    relationChoices
+    relationChoices,
+    disabled
   } = props;
 
   const [curSelectorValue, setCurSelectorValue] = useState('');
+  const [focus, setFocus] = useState(false);
+  const [outline, setOutline] = useState(false);
+  
 
   // Handles the change of the value selector
   const handleChangeSelect1 = (event) => {
@@ -55,6 +60,46 @@ export default function WhereSelector(props) {
     curChoices[parentIdx]['otherConditions'][idx]['limit'] = event.value
     setWhereSelectorChoices(curChoices)
   };
+
+  const getClassName = () => {
+    let fullClassName;
+    if (disabled) {
+      fullClassName = 'disabled';
+    } else {
+      if (getErrorState()) {
+        fullClassName = 'error';
+      }
+    }
+    return fullClassName
+  }
+
+  const getErrorState = () => {
+    if (whereSelectorChoices[parentIdx]['otherConditions'][idx]['condition'] !== ''
+        && whereSelectorChoices[parentIdx]['otherConditions'][idx]['relation'] !== ''
+        && whereSelectorChoices[parentIdx]['otherConditions'][idx]['limit'] !== '') {
+      return false;
+    } else {
+      return whereSelectorChoices[parentIdx]['otherConditions'][idx]['error'];
+    }
+  }
+
+  const focusEvent = () => {
+    setFocus(true);
+    setOutline(true);
+  }
+
+  const blurEvent = () => {
+    setFocus(false);
+    setOutline(false);
+  }
+
+  const condClasses = classNames({
+    'asySelect': true,
+    'focus': focus && outline,
+    'outline': outline && !(getClassName() === 'disabled'),
+    'error': getClassName() === 'error',
+    'disabled': getClassName() === 'disabled'
+  })
 
   // Populates and filters the limit option list based on the user input
   const loadOptions = (search, prevOptions) => {
@@ -99,7 +144,7 @@ export default function WhereSelector(props) {
   return (
     <span>
       <span className="otherSelectors">
-        <FormControl variant="outlined" className={classes.FormControl}>
+        <FormControl variant="outlined" className={classes.FormControl} error={getErrorState()} disabled={disabled}>
           <Select
             labelId="simple-select-outlined-label"
             id="simple-select-outlined"
@@ -111,7 +156,7 @@ export default function WhereSelector(props) {
             <MenuItem key={'OR'} value={'OR'}> {'OR'} </MenuItem>
           </Select>
         </FormControl>
-        <FormControl variant="outlined" className={classes.FormControl}>
+        <FormControl variant="outlined" className={classes.FormControl} error={getErrorState()} disabled={disabled}>
           <Select
             labelId="simple-select-outlined-label"
             id="simple-select-outlined"
@@ -127,11 +172,17 @@ export default function WhereSelector(props) {
         </FormControl>
         <FormControl>
           <AsyncPaginate
-            className="asySelect"
+            onFocus={focusEvent}
+            onBlur={blurEvent}
+            onMenuOpen={() => setFocus(true)}
+            onMenuClose={() => setFocus(false)}
+            blurInputOnSelect={true}
+            className={condClasses}
             value={{label: whereSelectorChoices[parentIdx]['otherConditions'][idx]['limit'].toString(), value: whereSelectorChoices[parentIdx]['otherConditions'][idx]['limit']}}
             loadOptions={loadOptions}
             onChange={handleChangeSelect3}
-            cacheUniqs={[curSelectorValue, whereSelectorChoices.length]}/>
+            cacheUniqs={[curSelectorValue, whereSelectorChoices.length]}
+            isDisabled={disabled}/>
         </FormControl>
       </span>
     </span>

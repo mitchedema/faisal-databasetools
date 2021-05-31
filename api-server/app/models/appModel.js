@@ -1,5 +1,6 @@
 const { idleCount } = require('./db.js');
 const psql = require('./db.js');
+const fs = require('fs');
 
 //Task object constructor
 const Data = {
@@ -9,7 +10,10 @@ const Data = {
 Data.getData = async (schema,values,conditions) => {
   const query_template =
   `SELECT DISTINCT
-    ${values}
+    ${values},
+    subject.RID,
+    visit.VISCODE,
+    dataset.name
   FROM
     ${schema}.dataset,
     ${schema}.subject,
@@ -41,11 +45,14 @@ Data.getValues = async (schema) => {
     information_schema.columns
   WHERE
     table_schema = '${schema}';`
+  const filename = __dirname + '/' + schema + '.json';
+  let file = fs.readFileSync(filename);
+  let fileJSON = JSON.parse(file);
   try{
     const client = await psql.connect();
     const result = await client.query(query_template);
     await client.release();
-    return result;
+    return {data: result.rows, info: fileJSON};
   } catch(err) {
       console.log(err)
   }

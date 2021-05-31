@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  margin: 0.5em
+  /* margin: 0.5em */
 }
 
 .asySelect {
@@ -19,10 +19,28 @@ body {
   cursor: text;
   border-color: rgba(0, 0, 0, 0.24);
   min-height: 56px;
+  box-shadow: unset;
+  transition: border 0ms !important;
+}
+
+.asySelect.error > div[class^=" css-"][class$="-control"] {
+  background-color: inherit;
+  cursor: text;
+  border-color: rgb(244, 67, 54) !important;
+  min-height: 56px;
 }
 
 .asySelect > div[class^=" css-"][class$="-control"]:hover {
   border-color: black;
+}
+
+.asySelect.outline > div[class^=" css-"][class$="-control"] {
+  border-color: #3f51b5;
+  border-width: 2px;
+}
+
+.asySelect.error.outline > div[class^=" css-"][class$="-control"]:hover {
+  border-color: rgb(244, 67, 54);
 }
 
 div[class^=" css-"][class$="-menu"] {
@@ -80,20 +98,34 @@ svg[class^="css-"][class$="-Svg"]:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
+.asySelect.disabled svg[class^="css-"][class$="-Svg"] {
+  fill: rgba(0, 0, 0, 0.26);
+  stroke: rgba(0, 0, 0, 0.26);
+}
+
 svg[class^="css-"][class$="-Svg"] path {
-  d: path('M6 9l4 4 4-4z')
+  d: path('M5.6 8l4 4 4-4z')
+}
+
+.asySelect.focus svg[class^="css-"][class$="-Svg"] {
+  transform: rotate(180deg);
 }
 
 .dataTable > div {
-  height: 80vh;
+  height: 65vh;
   width: 100%;
   border-radius: 4px;
+  margin-bottom: 0.5em;
 }
 
-div.dataTable > div > div > div.MuiDataGrid-root {
-  background-color: white;
+div.dataTable div.MuiDataGrid-root {
+  background-color: white !important;
 }
 
 .MuiTablePagination-caption {
   display: unset !important;
+}
+
+div.hidden {
+  display: none;
 }

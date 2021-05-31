@@ -33,4 +33,23 @@ div.whereSelectors > * {
 .asySelect {
   min-width: 140px;
   color: black;
+  padding-right: 14px;
+}
+
+.MuiFormControlLabel-label {
+  color: white;
+}
+
+.iconButton {
+  padding: 8px !important;
+  margin-left: 4px !important;
+  margin-right: 4px !important;
+}
+
+.iconButton svg{
+  fill: white !important;
+}
+
+.iconButton:disabled svg{
+  fill: rgba(0, 0, 0, 0.26) !important;
 }

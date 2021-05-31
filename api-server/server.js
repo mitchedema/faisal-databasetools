@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json()
 const appRoutes = require('./app/routes/appRoutes.js');
 const app = express();
+const proxy = require('express-http-proxy');
 
 //const server = https.createServer({key: key, cert: cert }, app);
 
@@ -18,6 +19,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+app.use('/xnat', proxy('http://localhost:80/'));
 appRoutes(app, jsonParser);
 // app.use(bodyParser.json({ type: 'application/*+json' }))
 // app.use(bodyParser.urlencoded({ extended: true }));
