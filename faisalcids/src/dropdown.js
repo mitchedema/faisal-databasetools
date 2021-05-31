@@ -80,7 +80,7 @@ export default function SimpleSelect(props) {
   const baseRangeURL = 'http://localhost:4000/range/?schema=';
   const baseValueURL = 'http://localhost:4000/values/?schema=';
   const baseQueryURL = 'http://localhost:4000/query/?schema=';
-  const baseSchemaURL = 'http://127.0.0.1:4000/schemas';
+  const baseSchemaURL = 'http://localhost:4000/schemas';
 
   const dataTypeTranslation = {
     'integer': 'number',
