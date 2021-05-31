@@ -19,7 +19,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-app.use('/xnat', proxy('http://172.28.0.1:80/'));
+app.use('/xnat', proxy('http://127.0.0.1:80/'));
 appRoutes(app, jsonParser);
 // app.use(bodyParser.json({ type: 'application/*+json' }))
 // app.use(bodyParser.urlencoded({ extended: true }));
