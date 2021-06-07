@@ -53,7 +53,7 @@ div[class^=" css-"][class$="-menu"] {
 .asySelect > div[class^=" css-"][class$="-control"] > div > div > div {
   color: white;
   font-size: 1rem;
-  display: unset;
+  display: block !important;
 }
 
 div[class^=" css-"][class$="-singleValue"] {
