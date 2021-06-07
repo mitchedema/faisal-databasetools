@@ -50,6 +50,11 @@ div[class^=" css-"][class$="-menu"] {
   overflow: hidden;
 }
 
+.asySelect > div[class^=" css-"][class$="-control"] > div > div > div {
+  color: white;
+  font-size: 1rem;
+}
+
 div[class^=" css-"][class$="-singleValue"] {
   color: white;
   font-size: 1rem;
@@ -82,7 +87,7 @@ span[class^=" css-"][class$="-indicatorSeparator"] {
   display: none !important;
 }
 
-svg[class^="css-"][class$="-Svg"] {
+.asySelect div[class^=" css-"][class$="-indicatorContainer"] > svg {
   fill: rgba(0, 0, 0, 0.54);
   stroke: rgba(0, 0, 0, 0.54);
   cursor: pointer;
@@ -94,20 +99,20 @@ svg[class^="css-"][class$="-Svg"] {
   margin-right: -2px;
 }
 
-svg[class^="css-"][class$="-Svg"]:hover {
+.asySelect div[class^=" css-"][class$="-indicatorContainer"] > svg:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-.asySelect.disabled svg[class^="css-"][class$="-Svg"] {
+.asySelect.disabled div[class^=" css-"][class$="-indicatorContainer"] > svg {
   fill: rgba(0, 0, 0, 0.26);
   stroke: rgba(0, 0, 0, 0.26);
 }
 
-svg[class^="css-"][class$="-Svg"] path {
+.asySelect div[class^=" css-"][class$="-indicatorContainer"] > svg path {
   d: path('M5.6 8l4 4 4-4z')
 }
 
-.asySelect.focus svg[class^="css-"][class$="-Svg"] {
+.asySelect.focus div[class^=" css-"][class$="-indicatorContainer"] > svg {
   transform: rotate(180deg);
 }
 
