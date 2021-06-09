@@ -121,7 +121,7 @@ const TabIcon = withStyles((theme) => ({
 function TabPanel(props) {
   const { children, value, index } = props;
   const displayClasses = classNames({
-    'hidden': value !== index
+    'hidden-tab': value !== index
   });
   
   return (

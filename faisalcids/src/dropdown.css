@@ -135,3 +135,7 @@ div.dataTable div.MuiDataGrid-root {
 .infoIcon svg {
   fill: rgb(44, 44, 44);
 }
+
+.MuiDataGridPanel-container .MuiFormControlLabel-label {
+  color: black;
+}
