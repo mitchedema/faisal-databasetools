@@ -70,6 +70,7 @@ export default function SimpleSelect(props) {
   const [tablePage, setTablePage] = useState(1);
   const [dataType, setDataType] = useState({});
   const [schemas, setSchemas] = useState([]);
+  const [outputData, setOutputData] = useState([]);
   const [infoTranslation, setInfoTranslation] = useState({});
 
   useEffect(() => {
@@ -475,7 +476,6 @@ export default function SimpleSelect(props) {
                   const matchingRecord = xnatData.ResultSet.Result.filter(obj => {
                     return obj.project === record.name && obj.subject_label === record.rid && obj.visit_id === record.viscode;
                   })
-                  console.log(matchingRecord)
                   if (matchingRecord.length > 0) {
                     const rec = matchingRecord[0];
                     record.xnatURL = 'http://localhost:11111/data/projects/' + rec.project + '/subjects/' + rec.subject_label + '/experiments/' + rec.ID;
@@ -486,6 +486,18 @@ export default function SimpleSelect(props) {
                 console.log(data);
                 // Assign data
                 setData(data);
+                const outputData = [];
+                const dataCopy = [...data];
+                const dataKeys = Object.keys(data[0]);
+                const diff = dataKeys.filter(x => values.indexOf(x) === -1);
+                dataCopy.forEach(copy => {
+                  const curCopy = {...copy};
+                  diff.forEach(key => {
+                    delete curCopy[key];
+                  })
+                  outputData.push(curCopy);
+                })
+                setOutputData(outputData);
                 // Create column name array for table display
                 let columns = [];
                 if (values.length <= 10) {
@@ -556,8 +568,20 @@ export default function SimpleSelect(props) {
                   }
                 ));
               }
-              setData(data)
-              setColumns(columns)
+              setData(data);
+              setColumns(columns);
+              const outputData = [];
+              const dataCopy = [...data];
+              const dataKeys = Object.keys(data[0]);
+              const diff = dataKeys.filter(x => values.indexOf(x) === -1);
+              dataCopy.forEach(copy => {
+                const curCopy = {...copy};
+                diff.forEach(key => {
+                  delete curCopy[key];
+                })
+                outputData.push(curCopy);
+              })
+              setOutputData(outputData);
             }
           })
         }
@@ -610,7 +634,6 @@ export default function SimpleSelect(props) {
             <Autocomplete
               multiple
               autoHighlight
-              disableListWrap
               id="multiple-autocomplete"
               // id="multiple-chip"
               options={valueOptions}
@@ -702,7 +725,7 @@ export default function SimpleSelect(props) {
             data.length > 0
             &&
             <CsvDownload
-              data={data}
+              data={outputData}
               filename="query.csv"
               style={{ //pass other props, like styles
                 boxShadow:"inset 0px 1px 0px 0px #e184f3",

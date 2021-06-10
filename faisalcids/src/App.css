@@ -132,6 +132,8 @@ div.dataTable div.MuiDataGrid-root {
   display: unset !important;
 }
 
-.hidden-tab {
-  display: none;
+div.hidden {
+  visibility: hidden;
+  height: 0px;
+  overflow-y: auto;
 }
