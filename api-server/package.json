@@ -9,7 +9,6 @@
     "nodemon": "^2.0.7",
     "pg": "^8.5.1"
   },
-  "proxy": "http://localhost:4000",
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

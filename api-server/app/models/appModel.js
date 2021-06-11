@@ -46,8 +46,11 @@ Data.getValues = async (schema) => {
   WHERE
     table_schema = '${schema}';`
   const filename = __dirname + '/' + schema + '.json';
-  let file = fs.readFileSync(filename);
-  let fileJSON = JSON.parse(file);
+  let fileJSON = {};
+  if (fs.existsSync(filename)) {
+    let file = fs.readFileSync(filename);
+    fileJSON = JSON.parse(file);
+  }
   try{
     const client = await psql.connect();
     const result = await client.query(query_template);

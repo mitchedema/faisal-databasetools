@@ -115,7 +115,7 @@ exports.get_schemas = async function (req,res) {
     if (result.rows.length > 0) {
       return res.status(200).json(result.rows);
     } else {
-      const defResult = { schema_name: 'public' };
+      const defResult = [{ schema_name: 'public' }];
       return res.status(200).json(defResult);
     }
   } catch (err) {
