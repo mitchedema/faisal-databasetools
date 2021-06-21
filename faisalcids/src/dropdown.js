@@ -77,10 +77,10 @@ export default function SimpleSelect(props) {
     getSchemas();
   });
 
-  const baseURL = 'http://localhost:4000/data/?schema=';
-  const baseRangeURL = 'http://localhost:4000/range/?schema=';
+  const baseURL = 'http://localhost:4000/{schema}/data/?';
+  const baseRangeURL = 'http://localhost:4000/{schema}/range/?';
   const baseValueURL = 'http://localhost:4000/values/?schema=';
-  const baseQueryURL = 'http://localhost:4000/query/?schema=';
+  const baseQueryURL = 'http://localhost:4000/{schema}/query/?';
   const baseSchemaURL = 'http://localhost:4000/schemas';
 
   const dataTypeTranslation = {
@@ -151,7 +151,14 @@ export default function SimpleSelect(props) {
     // Changes can be made to avoid needing this
     data = data.filter(onlyUnique)
     // Sort values for display
-    data.sort()
+    console.log(data);
+    data.sort((a,b) => {
+      if (isNaN(a) || isNaN(b)) {
+        return a.localeCompare(b);
+      } else {
+        return +a - +b;
+      }
+    })
     return [dataTypes, valInfo, data]
   }
 
@@ -212,7 +219,10 @@ export default function SimpleSelect(props) {
   };
 
   async function getSelectorOptions(schema, val, dataType) {
-    const response = await fetch(baseRangeURL + schema + '&value=' + val)
+    const url = baseRangeURL.replace(/\{(.*?)\}/g, () => {
+      return schema;
+    })
+    const response = await fetch(url + 'value=' + val)
     // Wait for data to be returned
     let data = await response.json()
     // Create array from values returned
@@ -246,7 +256,10 @@ export default function SimpleSelect(props) {
     exp['values'] = values;
     exp['numberOfWhereSelectors'] = numberOfWhereSelectors;
     // Generate a request based on the current selections
-    const request = generateRequest(baseQueryURL);
+    const url = baseQueryURL.replace(/\{(.*?)\}/g, () => {
+      return schema;
+    })
+    const request = generateRequest(url);
     // Declare headers for the GET request
     let headers = new Headers();
     headers.append('Content-Type', 'text/plain; charset=UTF-8');
@@ -430,7 +443,7 @@ export default function SimpleSelect(props) {
     let request = '';
     if (schema && joinedValues) {
       // Formulate the request
-      request = inURL + schema + '&values=' + joinedValues
+      request = inURL + 'values=' + joinedValues
       if (whereChoices) {
         request += '&conditions=' + whereChoices
       }
@@ -445,7 +458,10 @@ export default function SimpleSelect(props) {
     let request = '';
     // If all selectors are populated, generate the request
     if (formIsValid) {
-      request = generateRequest(baseURL);
+      const url = baseURL.replace(/\{(.*?)\}/g, () => {
+        return schema;
+      })
+      request = generateRequest(url);
     }
 
     // If selectors are all valid, send request to the database
@@ -470,34 +486,36 @@ export default function SimpleSelect(props) {
               xnatData = await response.json();
   
               if (Object.keys(xnatData).length >= 0) {
-                // Add an id field to each record for table display
-                data.forEach((record, index) => {
-                  record.id = index;
-                  const matchingRecord = xnatData.ResultSet.Result.filter(obj => {
-                    return obj.project === record.name && obj.subject_label === record.rid && obj.visit_id === record.viscode;
+                if (data.length > 0) {
+                  // Add an id field to each record for table display
+                  data.forEach((record, index) => {
+                    record.id = index;
+                    const matchingRecord = xnatData.ResultSet.Result.filter(obj => {
+                      return obj.project === record.name && obj.subject_label === record.rid && obj.visit_id === record.viscode;
+                    })
+                    if (matchingRecord.length > 0) {
+                      const rec = matchingRecord[0];
+                      record.xnatURL = 'http://localhost:11111/data/projects/' + rec.project + '/subjects/' + rec.subject_label + '/experiments/' + rec.ID;
+                    } else {
+                      record.xnatURL = '';
+                    }
                   })
-                  if (matchingRecord.length > 0) {
-                    const rec = matchingRecord[0];
-                    record.xnatURL = 'http://localhost:11111/data/projects/' + rec.project + '/subjects/' + rec.subject_label + '/experiments/' + rec.ID;
-                  } else {
-                    record.xnatURL = '';
-                  }
-                })
-                console.log(data);
-                // Assign data
+                  console.log(data);
+                  // Assign data
+                  const outputData = [];
+                  const dataCopy = [...data];
+                  const dataKeys = Object.keys(data[0]);
+                  const diff = dataKeys.filter(x => values.indexOf(x) === -1);
+                  dataCopy.forEach(copy => {
+                    const curCopy = {...copy};
+                    diff.forEach(key => {
+                      delete curCopy[key];
+                    })
+                    outputData.push(curCopy);
+                  })
+                  setOutputData(outputData);
+                }
                 setData(data);
-                const outputData = [];
-                const dataCopy = [...data];
-                const dataKeys = Object.keys(data[0]);
-                const diff = dataKeys.filter(x => values.indexOf(x) === -1);
-                dataCopy.forEach(copy => {
-                  const curCopy = {...copy};
-                  diff.forEach(key => {
-                    delete curCopy[key];
-                  })
-                  outputData.push(curCopy);
-                })
-                setOutputData(outputData);
                 // Create column name array for table display
                 let columns = [];
                 if (values.length <= 10) {
@@ -747,7 +765,7 @@ export default function SimpleSelect(props) {
         </div>
         <div className="dataTable">
           {
-            data.length > 0
+            data.length >= 0 && columns.length > 0
             &&
             <div>
               <DataGrid
