@@ -500,7 +500,6 @@ export default function SimpleSelect(props) {
                       record.xnatURL = '';
                     }
                   })
-                  console.log(data);
                   // Assign data
                   const outputData = [];
                   const dataCopy = [...data];
