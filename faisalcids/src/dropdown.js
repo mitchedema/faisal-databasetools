@@ -77,11 +77,11 @@ export default function SimpleSelect(props) {
     getSchemas();
   });
 
-  const baseURL = 'http://localhost:4000/{schema}/data/?';
-  const baseRangeURL = 'http://localhost:4000/{schema}/range/?';
-  const baseValueURL = 'http://localhost:4000/values/?schema=';
-  const baseQueryURL = 'http://localhost:4000/{schema}/query/?';
-  const baseSchemaURL = 'http://localhost:4000/schemas';
+  const baseURL = 'http://206.12.95.153/api/{schema}/data/?';
+  const baseRangeURL = 'http://206.12.95.153/api/{schema}/range/?';
+  const baseValueURL = 'http://206.12.95.153/api/values/?schema=';
+  const baseQueryURL = 'http://206.12.95.153/api/{schema}/query/?';
+  const baseSchemaURL = 'http://206.12.95.153/api/schemas';
 
   const dataTypeTranslation = {
     'integer': 'number',
