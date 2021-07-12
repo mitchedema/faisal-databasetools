@@ -4,6 +4,10 @@ module.exports = function(app) {
   const alzheimerController = require('../controllers/alzheimerController.js')
   const ukbiobankController = require('../controllers/ukbiobankController.js')
 
+  app.get('/', (req, res) => {
+    res.send('Hello World!')
+  });
+
   app.route('/data').get(controller.get_data);
   app.route('/range').get(controller.get_range);
   app.route('/query').get(controller.get_query);
