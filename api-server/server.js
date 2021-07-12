@@ -12,8 +12,6 @@ const appRoutes = require('./app/routes/appRoutes.js');
 const app = express();
 const proxy = require('express-http-proxy');
 
-const hostname = '206.12.95.153';
-
 //const server = https.createServer({key: key, cert: cert }, app);
 
 app.use(function(req, res, next) {
@@ -27,6 +25,6 @@ appRoutes(app, jsonParser);
 // app.use(bodyParser.urlencoded({ extended: true }));
 const port = 4000;
 
-app.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
 });
