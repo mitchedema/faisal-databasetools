@@ -1,6 +1,7 @@
 {
   "name": "faisalcids",
   "version": "0.1.0",
+  "homepage":"http://206.12.95.153/faisal",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.2",
